@@ -26,7 +26,7 @@ int main()
 
     int opt = 1;
     setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, (const void *)&opt, sizeof(opt));
-    
+
     Bind(listen_sock, (struct sockaddr *)&ser_addr, sizeof(ser_addr));
     Listen(listen_sock, 100);
 
@@ -50,7 +50,7 @@ int main()
             {
                 int client_addr_size = sizeof(client_addr);
                 int connfd = Accept(listen_sock, (struct sockaddr *)&client_addr, &client_addr_size);
-                event.events = EPOLLIN;
+                event.events = EPOLLIN | EPOLLET;
                 event.data.fd = connfd;
                 epoll_ctl(epfd, EPOLL_CTL_ADD, connfd, &event);
                 char ip[64] = {0};
@@ -75,7 +75,7 @@ int main()
                     {
                         buf[i] = toupper(buf[i]);
                     }
-                    Write(temp, buf, read_size);
+                    Write(temp, buf, read_size / 2);
                 }
             }
         }
